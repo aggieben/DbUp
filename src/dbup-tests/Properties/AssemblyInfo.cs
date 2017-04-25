@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("DbUp Contributors")]
@@ -16,3 +16,6 @@ using System.Runtime.InteropServices;
 [assembly: Guid("854b6565-b423-4e2c-938b-406c6eac9c0e")]
 
 [assembly: Xunit.CollectionBehavior(DisableTestParallelization = true)]
+[assembly: AssemblyVersion("4.0.0.0")]
+[assembly: AssemblyInformationalVersion("4.0.0-beta.2+0.Branch.release/4.0.0.Sha.57f648c216c9bd3089ecaf22d8e99df4f3dcc243")]
+[assembly: AssemblyFileVersion("4.0.0.0")]
