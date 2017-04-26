@@ -4,14 +4,6 @@
 var target = Argument("target", "Default");
 var outputDir = "./artifacts/";
 
-void UpdateProjectJsonVersion(string projectName) {
-    var proj = string.Format("./src/{0}/project.json", projectName);
-    var updatedProjectJson = System.IO.File.ReadAllText(proj)
-        .Replace("1.0.0-*", versionInfo.NuGetVersion);
-
-    System.IO.File.WriteAllText(proj, updatedProjectJson);
-}
-
 Task("Clean")
     .Does(() => {
         if (DirectoryExists(outputDir))
@@ -22,7 +14,7 @@ Task("Clean")
 
 Task("Restore")
     .Does(() => {
-        DotNetCoreRestore();
+        DotNetCoreRestore("./src");
     });
 
 GitVersion versionInfo = null;
@@ -33,14 +25,6 @@ Task("Version")
             OutputType = GitVersionOutput.BuildServer
         });
         versionInfo = GitVersion(new GitVersionSettings{ OutputType = GitVersionOutput.Json });
-        UpdateProjectJsonVersion("dbup-core");
-        UpdateProjectJsonVersion("dbup-firebird");
-        UpdateProjectJsonVersion("dbup-mysql");
-        UpdateProjectJsonVersion("dbup-postgresql");
-        UpdateProjectJsonVersion("dbup-sqlce");
-        UpdateProjectJsonVersion("dbup-sqlite");
-        UpdateProjectJsonVersion("dbup-sqlite-mono");
-        UpdateProjectJsonVersion("dbup-sqlserver");
     });
 
 Task("Build")
@@ -48,7 +32,10 @@ Task("Build")
     .IsDependentOn("Version")
     .IsDependentOn("Restore")
     .Does(() => {
-        MSBuild("./src/DbUp.sln");
+        DotNetCoreBuild("./src", new DotNetCoreBuildSettings
+        {
+            ArgumentCustomization = args => args.Append(String.Format("/p:Version={0}", versionInfo.NuGetVersion))
+        });
     });
 
 Task("Test")
