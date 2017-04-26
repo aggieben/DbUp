@@ -33,7 +33,11 @@ namespace DbUp.Tests.Engine
                 dbCommand = Substitute.For<IDbCommand>();
                 dbConnection.CreateCommand().Returns(dbCommand);
                 var connectionManager = new TestConnectionManager(dbConnection);
+#if TRACE_SUPPORT
                 scriptExecutor = new SqlScriptExecutor(() => connectionManager, () => new TraceUpgradeLog(), null, () => true, null, () => versionTracker);
+#else
+                scriptExecutor = new SqlScriptExecutor(() => connectionManager, null, null, () => true, null, () => versionTracker);
+#endif
 
                 var builder = new UpgradeEngineBuilder()
                     .WithScript(new SqlScript("1234", "create table $var$ (Id int)"))
