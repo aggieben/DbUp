@@ -41,7 +41,7 @@ Task("Build")
 Task("Test")
     .IsDependentOn("Build")
     .Does(() => {
-        DotNetCoreTest("./src/dbup-tests");
+        DotNetCoreTest("./src/dbup-tests/dbup-tests.csproj");
     });
 
 Task("Package")
